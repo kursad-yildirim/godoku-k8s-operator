@@ -10,4 +10,14 @@ plugins:
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: godoku-k8s-operator
 repo: github.com/tuff/godoku-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: tripko.local
+  group: tuff
+  kind: Godoku
+  path: github.com/tuff/godoku-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"

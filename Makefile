@@ -119,12 +119,12 @@ run: manifests generate fmt vet ## Run a controller from your host.
 # (i.e. docker build --platform linux/arm64 ). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker-build
-docker-build: test ## Build docker image with the manager.
-	docker build -t ${IMG} .
+podman-build: test ## Build docker image with the manager.
+	podman build -t ${IMG} .
 
 .PHONY: docker-push
-docker-push: ## Push docker image with the manager.
-	docker push ${IMG}
+podman-push: ## Push docker image with the manager.
+	podman push ${IMG}
 
 # PLATFORMS defines the target platforms for  the manager image be build to provide support to multiple
 # architectures. (i.e. make docker-buildx IMG=myregistry/mypoperator:0.0.1). To use this option you need to:

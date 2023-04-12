@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - tuff.tripko.local
+  resources:
+  - godokus
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - tuff.tripko.local
+  resources:
+  - godokus/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - tuff.tripko.local
+  resources:
+  - godokus/status
+  verbs:
+  - get
+  - patch
+  - update

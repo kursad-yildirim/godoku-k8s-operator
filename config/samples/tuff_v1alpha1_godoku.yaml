@@ -1,0 +1,14 @@
+apiVersion: tuff.tripko.local/v1alpha1
+kind: Godoku
+metadata:
+  name: godoku-cr
+  namespace: tuff-apps
+spec:
+  namespace: tuff-apps
+  name: godoku-oper
+  replicas: 1
+  image: image-registry.openshift-image-registry.svc:5000/tuff-apps/godoku:0.29.0
+  ports:
+    - name: godoku-port
+      containerPort: 8080
+      protocol: TCP

@@ -1,0 +1,12 @@
+apiVersion: tuff.tripko.local/v1alpha1
+kind: Godoku
+metadata:
+  labels:
+    app.kubernetes.io/name: godoku
+    app.kubernetes.io/instance: godoku-sample
+    app.kubernetes.io/part-of: godoku-k8s-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: godoku-k8s-operator
+  name: godoku-sample
+spec:
+  # TODO(user): Add fields here

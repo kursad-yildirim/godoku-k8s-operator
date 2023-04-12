@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: godoku-k8s-operator
+  namespace: godoku-k8s-operator-system
+  labels:
+    control-plane: controller-manager
+    app.kubernetes.io/name: deployment
+    app.kubernetes.io/instance: controller-manager
+    app.kubernetes.io/component: manager
+    app.kubernetes.io/created-by: godoku-k8s-operator
+    app.kubernetes.io/part-of: godoku-k8s-operator
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+      - command:
+        - /manager
+        args:
+        - --leader-elect
+        image: image-registry.openshift-image-registry.svc:5000/godoku-k8s-operator-system/godoku-k8s-operator:0.1
+        name: manager
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      serviceAccountName: controller-manager
+      terminationGracePeriodSeconds: 10

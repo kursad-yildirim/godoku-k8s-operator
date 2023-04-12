@@ -1,0 +1,27 @@
+# permissions for end users to view godokus.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: godoku-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: godoku-k8s-operator
+    app.kubernetes.io/part-of: godoku-k8s-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: godoku-viewer-role
+rules:
+- apiGroups:
+  - tuff.tripko.local
+  resources:
+  - godokus
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - tuff.tripko.local
+  resources:
+  - godokus/status
+  verbs:
+  - get

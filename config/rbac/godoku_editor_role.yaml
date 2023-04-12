@@ -1,0 +1,31 @@
+# permissions for end users to edit godokus.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: godoku-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: godoku-k8s-operator
+    app.kubernetes.io/part-of: godoku-k8s-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: godoku-editor-role
+rules:
+- apiGroups:
+  - tuff.tripko.local
+  resources:
+  - godokus
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - tuff.tripko.local
+  resources:
+  - godokus/status
+  verbs:
+  - get
