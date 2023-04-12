@@ -81,7 +81,6 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 
 // set environment
 // reconciler does recreate deplyoment after deleted manually
-// reconciler does not  scale up/down
 // define separate functions for differente operations deployment.scale/create/update/delete service.create/update/delete route.create/update/delete
 // create config map, service and route
 // adjust naming and labels
