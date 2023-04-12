@@ -10,7 +10,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -20,8 +19,7 @@ import (
 
 type GodokuReconciler struct {
 	client.Client
-	Scheme   *runtime.Scheme
-	Recorder record.EventRecorder
+	Scheme *runtime.Scheme
 }
 
 // +kubebuilder:rbac:groups=tuff.tripko.local,resources=godokus,verbs=get;list;watch;create;update;patch;delete
@@ -32,6 +30,7 @@ type GodokuReconciler struct {
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
 func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
+	// Fetch the godoku cr instance. If it does not exist no reconcilation is required.
 	godoku := &tuffv1alpha1.Godoku{}
 	err := r.Get(ctx, req.NamespacedName, godoku)
 	if err != nil {
@@ -42,18 +41,18 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		log.Error(err, "Failed to get godoku")
 		return ctrl.Result{}, err
 	}
+	// Create godoku deployment it does not exists already
 	found := &appsv1.Deployment{}
 	err = r.Get(ctx, types.NamespacedName{Name: godoku.Name, Namespace: godoku.Namespace}, found)
 	if err != nil && apierrors.IsNotFound(err) {
-		dep, err := r.deploymentForGodoku(godoku)
+		dep, err := r.createDeployment(godoku)
 		if err != nil {
 			log.Error(err, "Failed to define new Deployment resource for Godoku")
 			return ctrl.Result{}, err
 		}
 		log.Info("Creating a new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
 		if err = r.Create(ctx, dep); err != nil {
-			log.Error(err, "Failed to create new Deployment",
-				"Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
+			log.Error(err, "Failed to create new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
 			return ctrl.Result{}, err
 		}
 		return ctrl.Result{RequeueAfter: time.Minute}, nil
@@ -86,7 +85,7 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 // define separate functions for differente operations deployment.scale/create/update/delete service.create/update/delete route.create/update/delete
 // create config map, service and route
 // adjust naming and labels
-func (r *GodokuReconciler) deploymentForGodoku(godoku *tuffv1alpha1.Godoku) (*appsv1.Deployment, error) {
+func (r *GodokuReconciler) createDeployment(godoku *tuffv1alpha1.Godoku) (*appsv1.Deployment, error) {
 	ls := map[string]string{
 		"game": godoku.Spec.Name,
 	}
