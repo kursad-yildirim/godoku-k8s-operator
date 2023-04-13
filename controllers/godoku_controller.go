@@ -30,6 +30,7 @@ type GodokuReconciler struct {
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
 func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
+	log.Info(">>>>>> RECONCILER <<<<<<")
 	// Fetch the godoku cr instance. If it does not exist no reconcilation is required.
 	godoku := &tuffv1alpha1.Godoku{}
 	err := r.Get(ctx, req.NamespacedName, godoku)
@@ -63,6 +64,7 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	size := godoku.Spec.Replicas
 	if *found.Spec.Replicas != size {
 		found.Spec.Replicas = &size
+		log.Info("Updating Size of the Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name, "New Size: ", found.Spec.Replicas)
 		if err = r.Update(ctx, found); err != nil {
 			log.Error(err, "Failed to update Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
 			if err := r.Get(ctx, req.NamespacedName, godoku); err != nil {
@@ -79,7 +81,8 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	return ctrl.Result{}, nil
 }
 
-// reconciler does recreate deplyoment after deleted manually
+// log.info does not print the part after comma
+// reconciler does not monitor environmental changes like: deployment deleted ur up/down scaked manually
 // adjust naming and labels
 // define separate functions for differente operations deployment.scale/create/update/delete service.create/update/delete route.create/update/delete
 // create config map, service and route

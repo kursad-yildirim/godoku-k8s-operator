@@ -30,7 +30,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: image-registry.openshift-image-registry.svc:5000/godoku-operator/godoku-operator:0.5
+        image: image-registry.openshift-image-registry.svc:5000/godoku-operator/godoku-operator:0.8
         name: manager
         livenessProbe:
           httpGet:
