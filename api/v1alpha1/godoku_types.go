@@ -11,6 +11,7 @@ type GodokuSpec struct {
 	Replicas  int32                  `json:"replicas,omitempty"`
 	Image     string                 `json:"image"`
 	Ports     []corev1.ContainerPort `json:"ports"`
+	EnvFrom   []corev1.EnvFromSource `json:"envFrom"`
 }
 
 type GodokuStatus struct {

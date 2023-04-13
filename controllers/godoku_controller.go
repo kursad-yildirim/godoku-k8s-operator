@@ -79,11 +79,10 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	return ctrl.Result{}, nil
 }
 
-// set environment
 // reconciler does recreate deplyoment after deleted manually
+// adjust naming and labels
 // define separate functions for differente operations deployment.scale/create/update/delete service.create/update/delete route.create/update/delete
 // create config map, service and route
-// adjust naming and labels
 func (r *GodokuReconciler) createDeployment(godoku *tuffv1alpha1.Godoku) (*appsv1.Deployment, error) {
 	ls := map[string]string{
 		"game": godoku.Spec.Name,
@@ -113,6 +112,7 @@ func (r *GodokuReconciler) createDeployment(godoku *tuffv1alpha1.Godoku) (*appsv
 						Name:            godoku.Spec.Name,
 						ImagePullPolicy: corev1.PullIfNotPresent,
 						Ports:           godoku.Spec.Ports,
+						EnvFrom:         godoku.Spec.EnvFrom,
 					}},
 				},
 			},

@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: godoku-k8s-operator
-  namespace: godoku-k8s-operator-system
+  name: godoku-operator
+  namespace: godoku-operator
   labels:
     control-plane: controller-manager
     app.kubernetes.io/name: deployment
@@ -23,12 +23,14 @@ spec:
       labels:
         control-plane: controller-manager
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
       - command:
         - /manager
         args:
         - --leader-elect
-        image: image-registry.openshift-image-registry.svc:5000/godoku-k8s-operator-system/godoku-k8s-operator:0.3
+        image: image-registry.openshift-image-registry.svc:5000/godoku-operator/godoku-operator:0.5
         name: manager
         livenessProbe:
           httpGet:
@@ -42,5 +44,5 @@ spec:
             port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
-      serviceAccountName: controller-manager
+      serviceAccountName: godoku-operator
       terminationGracePeriodSeconds: 10
