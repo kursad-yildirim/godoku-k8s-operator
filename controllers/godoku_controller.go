@@ -64,7 +64,7 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	size := godoku.Spec.Replicas
 	if *found.Spec.Replicas != size {
 		found.Spec.Replicas = &size
-		log.Info("Updating Size of the Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name, "New Size: ", found.Spec.Replicas)
+		log.Info("Updating Size of the Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name, "New Size", found.Spec.Replicas)
 		if err = r.Update(ctx, found); err != nil {
 			log.Error(err, "Failed to update Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
 			if err := r.Get(ctx, req.NamespacedName, godoku); err != nil {
@@ -82,7 +82,7 @@ func (r *GodokuReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 }
 
 // log.info does not print the part after comma
-// reconciler does not monitor environmental changes like: deployment deleted ur up/down scaked manually
+// reconciler does not monitor environmental changes like: deployment deleted ur up/down scaled manually
 // adjust naming and labels
 // define separate functions for differente operations deployment.scale/create/update/delete service.create/update/delete route.create/update/delete
 // create config map, service and route
